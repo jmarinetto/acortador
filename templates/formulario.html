@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Acortador de enlaces</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+
+<body>
+    <div class="container">
+        {% if not short_url %}
+            {% if not formulario_visible %}
+                <div class="pulse-button" onclick="mostrarFormulario()">
+                    <img src="/static/link-icon.svg" alt="icono enlace" />
+                    <div class="tooltip">Haz clic<br>para acortar<br>tu enlace</div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <form id="formulario" action="/acortar" method="post" class="{% if not formulario_visible and not short_url %}oculto{% elif short_url %}oculto{% endif %}">
+
+
+            <input type="text" name="url" placeholder="Introduce tu URL">
+            <button type="submit">Acortar</button>
+        </form>
+
+        {% if short_url %}
+    <div class="resultado">
+        <p>Tu enlace acortado es:</p>
+        <div class="enlace-box">
+            <a href="{{ short_url }}" target="_blank" id="short-url">{{ short_url }}</a>
+            <button class="btn-copiar" onclick="copiarAlPortapapeles()">📋 Copiar</button>
+        </div>
+    
+         <div class="btn-otro-container">
+        <button class="btn-otro" onclick="window.location.href='/'">Acortar otro enlace</button>
+    </div>
+    </div>
+   
+
+    <div id="notificacion" class="notificacion oculto">¡Enlace copiado al portapapeles!</div>
+
+<script>
+    function copiarAlPortapapeles() {
+        const enlace = document.getElementById("short-url").href;
+        navigator.clipboard.writeText(enlace).then(() => {
+            const noti = document.getElementById("notificacion");
+            noti.classList.remove("oculto");
+            setTimeout(() => {
+                noti.classList.add("oculto");
+            }, 2000);
+        });
+    }
+</script>
+{% endif %}
+
+
+    </div>
+
+    <script>
+        function mostrarFormulario() {
+            document.querySelector('.pulse-button').style.display = 'none';
+            document.getElementById('formulario').classList.remove('oculto');
+        }
+    </script>
+</body>
+
+</html>
+
